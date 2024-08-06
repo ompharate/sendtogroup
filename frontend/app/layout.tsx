@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { SocketProvider } from "@/context/socketContext";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +18,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={"h-screen bg-gradient-to-t from-[#19191c] to-[#281a21]"}>
+        <SocketProvider>
+        <Navbar/>
+          {children}
+        </SocketProvider>
+      </body>
     </html>
   );
 }
