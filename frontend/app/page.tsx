@@ -5,10 +5,12 @@ import { SocketContext } from "@/context/socketContext";
 import UserSideControl from "@/components/UserSideControl";
 import ReceiverControl from "@/components/ReciverControl";
 import MainController from "@/components/MainControler";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Home() {
   const { socket, activeRoomId } = useContext(SocketContext) || { socket: null };
   const [message, setMessage] = useState<string | null>(null)
+  const { toast } = useToast()
 
   useEffect(() => {
 
@@ -29,7 +31,10 @@ export default function Home() {
 
       if (message != null) {
         socket.emit("newMessage", { activeRoomId, message })
-      }
+        toast({
+          title: "Message has been sent",
+        })
+      } 
     }
   }
 

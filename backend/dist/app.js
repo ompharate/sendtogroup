@@ -38,9 +38,14 @@ io.on("connection", (socket) => {
         socket.join(roomId);
         io.to(roomId).emit("newUser", "a new user joined the room");
     });
+    socket.on("leave", (roomId) => {
+        console.log(`User left the room: ${roomId}`);
+        socket.leave(roomId);
+        io.to(roomId).emit("newUser", "a new user left the room");
+    });
     socket.on("newMessage", ({ activeRoomId, message }) => {
         console.log(`User sent message in room: ${activeRoomId}`, message);
-        io.to(activeRoomId).emit("message", message);
+        socket.to(activeRoomId).emit("message", message);
     });
     socket.on("disconnect", () => {
         console.log("User disconnected");
