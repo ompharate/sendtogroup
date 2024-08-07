@@ -10,7 +10,7 @@ const MainController: React.FC<MainControllerProps> = ({ handleSend }) => {
     return (
         <div className='flex justify-between items-center'>
             <button
-                disabled={activeRoomId ? true : false}
+                disabled={activeRoomId ? false : true}
                 style={{
                     backgroundColor:!activeRoomId ? "#f09090" : "#f87171",
                     cursor:activeRoomId ? "pointer" : "not-allowed"
