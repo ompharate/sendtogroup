@@ -7,8 +7,8 @@ import { io, Socket } from "socket.io-client";
 interface SocketContextValue {
   socket: Socket | null;
   randomId: number
-  activeRoomId:string|null,
-  setActiveRoomId:React.Dispatch<React.SetStateAction<string|null>>
+  activeRoomId: string | null,
+  setActiveRoomId: React.Dispatch<React.SetStateAction<string | null>>
 
 }
 
@@ -17,10 +17,10 @@ export const SocketContext = createContext<SocketContextValue | undefined>(undef
 export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [randomId, setRandomId] = useState<number>(0);
-  const [activeRoomId, setActiveRoomId] = useState<string|null>(null);
+  const [activeRoomId, setActiveRoomId] = useState<string | null>(null);
   useEffect(() => {
     setRandomId(generateRandomSixDigitNumber());
-    const socketInstance = io("http://localhost:4000");
+    const socketInstance = io("https://stg-backend-svcu.onrender.com");
     socketInstance.on("connect", () => {
       console.log("Socket connected:", socketInstance.id);
     });
@@ -44,7 +44,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
 
   return (
-    <SocketContext.Provider value={{ socket, randomId,activeRoomId ,setActiveRoomId}}>
+    <SocketContext.Provider value={{ socket, randomId, activeRoomId, setActiveRoomId }}>
       {children}
     </SocketContext.Provider>
   );
