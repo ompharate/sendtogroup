@@ -7,13 +7,15 @@ import { Server } from "socket.io";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 dotenv.config({ path: "./.env" });
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 export const envMode = process.env.NODE_ENV?.trim() || "DEVELOPMENT";
 const port = process.env.PORT || 3000;
-const uploadDir = path.join(__dirname, "uploads/");
+const uploadDir = path.join(__dirname, "uploads");
+console.log(uploadDir);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
@@ -21,6 +23,10 @@ app.use(cors({
     credentials: true,
 }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+if (!fs.existsSync(uploadDir)) {
+    console.log("created");
+    fs.mkdirSync(uploadDir);
+}
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         console.log("file is :", file.filename);
