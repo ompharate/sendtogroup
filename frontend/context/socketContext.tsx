@@ -19,8 +19,9 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [randomId, setRandomId] = useState<number>(0);
   const [activeRoomId, setActiveRoomId] = useState<string | null>(null);
   useEffect(() => {
+    console.log("env is",process.env.NEXT_PUBLIC_BACKEND_URL)
     setRandomId(generateRandomSixDigitNumber());
-    const socketInstance = io("https://stg-backend-svcu.onrender.com");
+    const socketInstance = io(`${process.env.NEXT_PUBLIC_BACKEND_URL}`);
     socketInstance.on("connect", () => {
       console.log("Socket connected:", socketInstance.id);
     });
