@@ -46,7 +46,7 @@ const Navbar = () => {
         <div className='flex flex-col w-full bg-[#19191c] items-center justify-between lg:flex-row'>
             <div>
                 <h1 className=' text-white font-bold px-2 py-5  cursor-pointer lg:text-2xl'>
-                    SendToGroup.com
+                    SendToGroup
                 </h1>
             </div>
             <div>
