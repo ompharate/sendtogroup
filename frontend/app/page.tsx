@@ -17,7 +17,9 @@ export default function Home() {
 
     if (socket) {
       socket.on("newUser", (message) => {
-        console.log(message)
+        toast({
+          title: message,
+        })
       })
       socket.on("file-received", (path) => {
         const link = document.createElement('a');
@@ -64,6 +66,7 @@ export default function Home() {
             toast({
               title: "File has been sent",
             })
+            setFile(null)
           }
 
         } catch (error) {
@@ -78,7 +81,7 @@ export default function Home() {
 
 
   return (
-    <div className="flex h-[80%]">
+    <div className="flex flex-col h-[80%] lg:flex-row">
       <UserSideControl setMessage={setMessage} setFile={setFile} />
       <MainController handleSend={handleSend} />
       <ReceiverControl />

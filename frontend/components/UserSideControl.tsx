@@ -1,20 +1,28 @@
 "use client";
 import { SocketContext } from '@/context/socketContext';
 import React, { ChangeEvent, Dispatch, SetStateAction, useContext, useState } from 'react';
+import { useToast } from './ui/use-toast';
 
 interface UserSideControlProps {
     setMessage: Dispatch<SetStateAction<string | null>>;
     setFile: Dispatch<SetStateAction<File | null>>;
 }
 
-const UserSideControl: React.FC<UserSideControlProps> = ({ setMessage,setFile }) => {
+const UserSideControl: React.FC<UserSideControlProps> = ({ setMessage, setFile }) => {
     const { socket, activeRoomId } = useContext(SocketContext) || { socket: null };
-  
+    const { toast } = useToast()
     const [uploadStatus, setUploadStatus] = useState<string | null>(null);
 
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setFile(e.target.files[0]);
+            if (e.target?.files[0].size < 1000000) {
+                console.log(e.target.files[0])
+                setFile(e.target.files[0]);
+            } else {
+                toast({
+                    title: "File size must be less than 1MB",
+                })
+            }
         }
     };
 

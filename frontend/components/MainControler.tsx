@@ -8,7 +8,7 @@ interface MainControllerProps {
 const MainController: React.FC<MainControllerProps> = ({ handleSend }) => {
     const { activeRoomId } = useContext(SocketContext) || { socket: null };;
     return (
-        <div className='flex justify-between items-center'>
+        <div className='flex justify-center items-center'>
             <button
                 disabled={activeRoomId ? false : true}
                 style={{

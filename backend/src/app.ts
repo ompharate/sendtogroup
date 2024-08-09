@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 export const envMode = process.env.NODE_ENV?.trim() || "DEVELOPMENT";
 const port = process.env.PORT || 3000;
 const uploadDir = path.join(__dirname, "uploads");
-console.log(uploadDir)
+console.log(uploadDir);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,7 +28,7 @@ app.use(
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 if (!fs.existsSync(uploadDir)) {
-  console.log("created")
+  console.log("created");
   fs.mkdirSync(uploadDir);
 }
 
@@ -78,12 +78,12 @@ io.on("connection", (socket) => {
   socket.on("join", (roomId) => {
     console.log(`User joined room: ${roomId}`);
     socket.join(roomId);
-    io.to(roomId).emit("newUser", "a new user joined the room");
+    socket.to(roomId).emit("newUser", "a new user joined the room");
   });
   socket.on("leave", (roomId) => {
     console.log(`User left the room: ${roomId}`);
     socket.leave(roomId);
-    io.to(roomId).emit("newUser", "a new user left the room");
+    socket.to(roomId).emit("newUser", "a user left the room");
   });
 
   socket.on("newMessage", ({ activeRoomId, message }) => {

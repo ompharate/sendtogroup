@@ -10,13 +10,25 @@ const Navbar = () => {
     const [roomIdToJoin, setRoomIdToJoin] = useState<string | null>(null);
     const handleJoinRoom = () => {
         if (socket) {
-            setActiveRoomId(roomIdToJoin + "")
             if (roomIdToJoin != null) {
+                if (roomIdToJoin.length < 6) {
+                    toast({
+                        title: "Id must be 6 characters long",
+                    })
+                    return;
+                }
+                setActiveRoomId(roomIdToJoin + "")
                 socket.emit("join", roomIdToJoin)
+                setRoomIdToJoin("")
+                toast({
+                    title: "You have joined this room",
+                })
+            } else {
+
+                toast({
+                    title: "Id must be common to join, enter one of the common or provided id into all device",
+                })
             }
-            toast({
-                title: "You have joined this room",
-            })
         }
     }
 
@@ -31,22 +43,25 @@ const Navbar = () => {
     }
 
     return (
-        <div className='flex w-full bg-[#19191c] items-center justify-between'>
+        <div className='flex flex-col w-full bg-[#19191c] items-center justify-between lg:flex-row'>
             <div>
-                <h1 className='text-2xl text-white font-bold px-2 py-5  cursor-pointer'>
+                <h1 className=' text-white font-bold px-2 py-5  cursor-pointer lg:text-2xl'>
                     SendToGroup.com
                 </h1>
             </div>
             <div>
-                <h1 className='text-3xl tracking-wider text-red-500 font-semibold cursor-pointer'>{randomId ? randomId : null}</h1>
+                <h1 className='tracking-wider text-red-500 font-semibold cursor-pointer lg:text-3xl '>{randomId ? randomId : null}</h1>
             </div>
             {!activeRoomId ? (
-                <div className='flex gap-2'>
+                <div className='flex gap-2 items-center flex-col lg:flex-row'>
                     <input
-                        className='px-2  rounded-lg'
+                        className='px-2  rounded-lg h-7 lg:h-14'
                         onChange={(e) => setRoomIdToJoin(e.target.value)}
+                        value={roomIdToJoin?roomIdToJoin:""}
                         type="text"
+                        pattern='[0-9]$'
                         placeholder="Enter the id"
+                        required={true}
                     />
                     <button onClick={handleJoinRoom} className='px-3 py-4 bg-[#281a21] text-white border border-white rounded-xl cursor-pointer font-semibold hover:bg-[#121211] hover:scale-90'>Join Room</button>
                 </div>

@@ -66,12 +66,12 @@ io.on("connection", (socket) => {
     socket.on("join", (roomId) => {
         console.log(`User joined room: ${roomId}`);
         socket.join(roomId);
-        io.to(roomId).emit("newUser", "a new user joined the room");
+        socket.to(roomId).emit("newUser", "a new user joined the room");
     });
     socket.on("leave", (roomId) => {
         console.log(`User left the room: ${roomId}`);
         socket.leave(roomId);
-        io.to(roomId).emit("newUser", "a new user left the room");
+        socket.to(roomId).emit("newUser", "a user left the room");
     });
     socket.on("newMessage", ({ activeRoomId, message }) => {
         console.log(`User sent message in room: ${activeRoomId}`, message);
