@@ -4,6 +4,7 @@ import "./globals.css";
 import { SocketProvider } from "@/context/socketContext";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/toaster";
+import Slider from "@/components/Slider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={"h-screen bg-gradient-to-t from-[#19191c] to-[#281a21]"}>
+      <body className="">
         <SocketProvider>
           <Toaster />
           <Navbar />

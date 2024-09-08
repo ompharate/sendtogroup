@@ -2,6 +2,7 @@
 import { SocketContext } from '@/context/socketContext'
 import React, { useContext, useState } from 'react'
 import { toast } from './ui/use-toast';
+import Image from 'next/image';
 
 const Navbar = () => {
 
@@ -43,10 +44,10 @@ const Navbar = () => {
     }
 
     return (
-        <div className='flex flex-col w-full bg-[#19191c] items-center justify-between lg:flex-row'>
+        <div className='flex flex-col w-full border-b-2 items-center justify-between lg:flex-row'>
             <div>
-                <h1 className=' text-white font-bold px-2 py-5  cursor-pointer lg:text-2xl'>
-                    SendToGroup
+                <h1 className='  font-bold px-2 py-5  cursor-pointer lg:text-2xl'>
+                    <Image src={"/logo.png"} width={140} height={100} alt='logo'/>
                 </h1>
             </div>
             <div>
@@ -55,9 +56,9 @@ const Navbar = () => {
             {!activeRoomId ? (
                 <div className='flex gap-2 items-center flex-col lg:flex-row'>
                     <input
-                        className='px-2  rounded-lg h-7 lg:h-14'
+                        className='px-2 border  rounded-lg h-7 lg:h-14'
                         onChange={(e) => setRoomIdToJoin(e.target.value)}
-                        value={roomIdToJoin?roomIdToJoin:""}
+                        value={roomIdToJoin ? roomIdToJoin : ""}
                         type="text"
                         pattern='[0-9]$'
                         placeholder="Enter the id"
