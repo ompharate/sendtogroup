@@ -75,10 +75,11 @@ app.use(errorMiddleware);
 io.on("connection", (socket) => {
   console.log("User connected");
 
-  socket.on("join", (roomId) => {
-    console.log(`User joined room: ${roomId}`);
-    socket.join(roomId);
-    socket.to(roomId).emit("newUser", "a new user joined the room");
+  socket.on("join", ({ roomIdToJoin, nameToJoin }) => {
+    console.log(`User joined room: ${roomIdToJoin}`);
+    socket.join(roomIdToJoin);
+
+    io.to(roomIdToJoin).emit("newUser", nameToJoin);
   });
   socket.on("leave", (roomId) => {
     console.log(`User left the room: ${roomId}`);
@@ -88,7 +89,8 @@ io.on("connection", (socket) => {
 
   socket.on("newMessage", ({ activeRoomId, message }) => {
     console.log(`User sent message in room: ${activeRoomId}`, message);
-    socket.to(activeRoomId).emit("message", message);
+    // socket.to(activeRoomId).emit("message", message);
+    io.to(activeRoomId).emit("message", message);
   });
 
   socket.on("upload-file", ({ fileName, activeRoomId }) => {

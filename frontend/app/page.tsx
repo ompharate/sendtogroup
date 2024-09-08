@@ -4,13 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "@/context/socketContext";
 import UserSideControl from "@/components/MessageSection";
-import ReceiverControl from "@/components/ReciverControl";
-import MainController from "@/components/MainControler";
 import { useToast } from "@/components/ui/use-toast";
 import Slider from "@/components/Slider";
 import FileTransfer from "@/components/FileSection";
 import Image from "next/image";
 import CodeEditorSection from "@/components/CodeEditorSection";
+import { Users } from "lucide-react";
 
 const tabs = [{
   icon: <Image alt='text' src={"/textcon.png"} width={35} height={35} />,
@@ -20,41 +19,43 @@ const tabs = [{
   component: <FileTransfer />
 }, {
   icon: <Image alt='text' src={"/codecoll.jfif"} width={35} height={35} />,
-  component: <CodeEditorSection/>
+  component: <CodeEditorSection />
 }]
 
 
 export default function Home() {
-  // const { socket, activeRoomId } = useContext(SocketContext) || { socket: null };
+  const { socket, activeRoomId } = useContext(SocketContext) || { socket: null };
+  const [numberOfUsers, setNumberOfUsers] = useState<string[] | null>([]);
   // const [message, setMessage] = useState<string | null>(null)
   // const [file, setFile] = useState<File | null>(null);
-  // const { toast } = useToast()
+  const { toast } = useToast()
   const [activeTab, setActiveTab] = useState(0);
   // console.log(process.env.BACKEND_URL)
-  // useEffect(() => {
+  useEffect(() => {
 
-  //   if (socket) {
-  //     socket.on("newUser", (message) => {
-  //       toast({
-  //         title: message,
-  //       })
-  //     })
-  //     socket.on("file-received", (path) => {
-  //       const link = document.createElement('a');
-  //       link.target = "_blank";
-  //       link.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/` + path;
-  //       document.body.appendChild(link);
-  //       link.click();
-  //       document.body.removeChild(link);
-  //     })
-  //   }
+    if (socket) {
+      socket.on("newUser", (nameToJoin,numberOfUsers) => {
+        setNumberOfUsers(nameToJoin)
+        toast({
+          title: "New User is joined",
+        })
+      })
+    }
+    //     socket.on("file-received", (path) => {
+    //       const link = document.createElement('a');
+    //       link.target = "_blank";
+    //       link.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/` + path;
+    //       document.body.appendChild(link);
+    //       link.click();
+    //       document.body.removeChild(link);
+    //     })
+    //   }
 
-  //   return () => {
-  //     socket?.off("newUser")
-  //     socket?.off("file-received")
-  //   }
-
-  // }, [socket])
+    return () => {
+      socket?.off("newUser")
+      // socket?.off("file-received")
+    }
+  }, [socket])
 
   // const handleSend = async () => {
   //   if (socket) {
@@ -99,27 +100,15 @@ export default function Home() {
   return (
     <div className="px-5 py-5">
       <div className="border rounded-xl p-3 list-none flex gap-5">
-        <li className="flex flex-col items-center">
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <p>om</p>
-        </li>
-        <li className="flex flex-col  items-center">
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <p>onkar</p>
-        </li>
-        <li className="flex flex-col  items-center">
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <p>suraj</p>
-        </li>
+        {Array.from({ length: numberOfUsers?.length ?? 0 }).map((_, num) => (
+          <li className="flex flex-col items-center">
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <p>om</p>
+          </li>
+        ))}
       </div>
       <div className="my-5 flex items-center gap-5 h-full">
         <Slider setActiveTab={setActiveTab} />

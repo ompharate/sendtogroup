@@ -9,6 +9,7 @@ const Navbar = () => {
     const { socket, randomId, setActiveRoomId, activeRoomId } = useContext(SocketContext) || { socket: null };
     console.log(activeRoomId)
     const [roomIdToJoin, setRoomIdToJoin] = useState<string | null>(null);
+    const [nameToJoin, setNameToJoin] = useState("");
     const handleJoinRoom = () => {
         if (socket) {
             if (roomIdToJoin != null) {
@@ -19,7 +20,7 @@ const Navbar = () => {
                     return;
                 }
                 setActiveRoomId(roomIdToJoin + "")
-                socket.emit("join", roomIdToJoin)
+                socket.emit("join", { roomIdToJoin, nameToJoin })
                 setRoomIdToJoin("")
                 toast({
                     title: "You have joined this room",
@@ -47,10 +48,10 @@ const Navbar = () => {
         <div className='flex flex-col w-full border-b-2 items-center justify-between lg:flex-row'>
             <div>
                 <h1 className='  font-bold px-2 py-5  cursor-pointer lg:text-2xl'>
-                    <Image src={"/logo.png"} width={140} height={100} alt='logo'/>
+                    <Image src={"/logo.png"} width={140} height={100} alt='logo' />
                 </h1>
             </div>
-            <div>
+            <div className=''>
                 <h1 className='tracking-wider text-red-500 font-semibold cursor-pointer lg:text-3xl '>{randomId ? randomId : null}</h1>
             </div>
             {!activeRoomId ? (
@@ -63,6 +64,13 @@ const Navbar = () => {
                         pattern='[0-9]$'
                         placeholder="Enter the id"
                         required={true}
+                    />
+                    <input
+                        className='px-2 border w-[100px] rounded-lg h-7 lg:h-14'
+                        onChange={(e) => setNameToJoin(e.target.value)}
+                        type="text"
+                        placeholder="Your Name"
+                        required={false}
                     />
                     <button onClick={handleJoinRoom} className='px-3 py-4 bg-[#281a21] text-white border border-white rounded-xl cursor-pointer font-semibold hover:bg-[#121211] hover:scale-90'>Join Room</button>
                 </div>

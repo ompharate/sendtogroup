@@ -19,7 +19,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [randomId, setRandomId] = useState<number>(0);
   const [activeRoomId, setActiveRoomId] = useState<string | null>(null);
   useEffect(() => {
-    console.log("env is",process.env.NEXT_PUBLIC_BACKEND_URL)
+   
     setRandomId(generateRandomSixDigitNumber());
     const socketInstance = io(`${process.env.NEXT_PUBLIC_BACKEND_URL}`);
     socketInstance.on("connect", () => {
@@ -32,10 +32,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       console.log("Socket disconnected");
     });
 
-    socketInstance.on("message", (message) => {
-      console.log("Message received:", message);
-    });
-
+  
 
     return () => {
       socketInstance.disconnect();
