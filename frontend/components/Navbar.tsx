@@ -3,15 +3,12 @@ import { SocketContext } from '@/context/socketContext'
 import React, { useContext, useState } from 'react'
 import { toast } from './ui/use-toast';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
 
     const { socket, randomId, setActiveRoomId, activeRoomId, setRandomId } = useContext(SocketContext) || { socket: null };
-    console.log(activeRoomId)
     const [roomIdToJoin, setRoomIdToJoin] = useState<string | null>(null);
-    const navigate = useRouter();
-
+ 
     const handleJoinRoom = () => {
         if (socket) {
             if (roomIdToJoin != null) {

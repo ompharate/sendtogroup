@@ -1,7 +1,6 @@
 "use client"
 import { SocketContext } from '@/context/socketContext';
-import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -32,8 +31,6 @@ const CodeEditorSection = () => {
     return (
         <>
             <Editor
-
-
                 value={code}
                 onValueChange={code => updateCode(code)}
                 highlight={code => highlight(code, languages.js)}
@@ -42,11 +39,8 @@ const CodeEditorSection = () => {
                 style={{
                     backgroundColor: '#282c34',
                     color: '#abb2bf',
-
                     borderRadius: 5,
                     border: '1px solid #282c34',
-
-                    // padding: '10px',
                     fontFamily: '"Fira code", "Fira Mono", monospace',
                     fontSize: 12,
                 }}

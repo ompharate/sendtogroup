@@ -4,45 +4,45 @@ import { errorMiddleware } from "./middlewares/error.js";
 import dotenv from "dotenv";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import multer from "multer";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 dotenv.config({ path: "./.env" });
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 export const envMode = process.env.NODE_ENV?.trim() || "DEVELOPMENT";
 const port = process.env.PORT || 3000;
-const uploadDir = path.join(__dirname, "uploads");
-console.log(uploadDir);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
     origin: "*",
     credentials: true,
 }));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-if (!fs.existsSync(uploadDir)) {
-    console.log("created");
-    fs.mkdirSync(uploadDir);
-}
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        console.log("file is :", file.filename);
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + "-" + file.originalname);
+const s3Client = new S3Client({
+    region: process.env.AWS_REGION,
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
 });
-const uploadStorage = multer({ storage: storage });
-app.post("/api/upload", uploadStorage.single("file"), (req, res) => {
-    console.log(req.file);
-    return res.json({
-        uploaded: true,
-        file: req.file?.filename,
-    });
+app.get("/generatePresignedUrl", async (req, res) => {
+    try {
+        const { filename, filetype } = req.query;
+        if (!filename || !filetype) {
+            return res
+                .status(400)
+                .json({ message: "Filename and filetype are required." });
+        }
+        const command = new PutObjectCommand({
+            Bucket: process.env.AWS_S3_BUCKET,
+            Key: filename,
+            ContentType: filetype,
+        });
+        const url = await getSignedUrl(s3Client, command);
+        res.json({ url });
+    }
+    catch (error) {
+        console.error("Error generating presigned URL:", error);
+        res.status(500).json({ message: "Failed to generate presigned URL." });
+    }
 });
 const server = createServer(app);
 const io = new Server(server, {
@@ -62,33 +62,28 @@ app.get("*", (req, res) => {
 });
 app.use(errorMiddleware);
 io.on("connection", (socket) => {
-    console.log("User connected");
     socket.on("join", (roomIdToJoin) => {
-        console.log(`User joined room: ${roomIdToJoin}`);
         socket.join(roomIdToJoin);
         const numberOfUsers = io.sockets.adapter.rooms.get(roomIdToJoin);
         io.to(roomIdToJoin).emit("newUser", numberOfUsers?.size);
     });
     socket.on("leave", (roomId) => {
-        console.log(`User left the room: ${roomId}`);
         socket.leave(roomId);
         const numberOfUsers = io.sockets.adapter.rooms.get(roomId);
         io.to(roomId).emit("newUser", numberOfUsers?.size);
     });
     socket.on("newMessage", ({ activeRoomId, message }) => {
-        console.log(`User sent message in room: ${activeRoomId}`, message);
-        // socket.to(activeRoomId).emit("message", message);
         io.to(activeRoomId).emit("message", message);
     });
     socket.on("codeChange", ({ newCode, activeRoomId }) => {
         socket.to(activeRoomId).emit("updateCode", newCode);
     });
     socket.on("upload-file", ({ fileName, activeRoomId }) => {
-        console.log("File received:", fileName);
         socket.to(activeRoomId).emit("file-received", fileName);
     });
-    socket.on("disconnect", () => {
-        console.log("User disconnected");
+    socket.on("progress", ({ percentComplete, activeRoomId, fileName }) => {
+        io.to(activeRoomId).emit("progress", { percentComplete, fileName });
     });
+    socket.on("disconnect", () => { });
 });
 server.listen(port, () => console.log(`Server is working on Port: ${port} in ${envMode} Mode.`));

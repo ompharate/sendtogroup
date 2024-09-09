@@ -1,8 +1,4 @@
-import Image from 'next/image'
 import React, { Dispatch, SetStateAction } from 'react'
-import FileSection from './FileSection'
-import MessageSection from './MessageSection'
-import CodeEditorSection from './CodeEditorSection'
 import tabs from "../components/tabs";
 const Slider = ({ setActiveTab }: { setActiveTab: Dispatch<SetStateAction<number>> }) => {
     return (
@@ -18,5 +14,4 @@ const Slider = ({ setActiveTab }: { setActiveTab: Dispatch<SetStateAction<number
         </div>
     )
 }
-
 export default Slider

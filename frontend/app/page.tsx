@@ -1,22 +1,15 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
 import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "@/context/socketContext";
-import UserSideControl from "@/components/MessageSection";
 import { useToast } from "@/components/ui/use-toast";
 import Slider from "@/components/Slider";
-import FileTransfer from "@/components/FileSection";
-import Image from "next/image";
-import CodeEditorSection from "@/components/CodeEditorSection";
-import { Users } from "lucide-react";
 import tabs from "../components/tabs";
 
 
 export default function Home() {
-  const { socket, activeRoomId } = useContext(SocketContext) || { socket: null };
+  const { socket } = useContext(SocketContext) || { socket: null };
   const [numberOfUsers, setNumberOfUsers] = useState(0);
-  // const [file, setFile] = useState<File | null>(null);
   const { toast } = useToast()
   const [activeTab, setActiveTab] = useState(0);
   useEffect(() => {
@@ -29,61 +22,12 @@ export default function Home() {
         })
       })
     }
-    //     socket.on("file-received", (path) => {
-    //       const link = document.createElement('a');
-    //       link.target = "_blank";
-    //       link.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/uploads/` + path;
-    //       document.body.appendChild(link);
-    //       link.click();
-    //       document.body.removeChild(link);
-    //     })
-    //   }
-
+  
     return () => {
       socket?.off("newUser")
-      // socket?.off("file-received")
     }
   }, [socket])
 
-  // const handleSend = async () => {
-  //   if (socket) {
-
-  //     if (message != null) {
-  //       socket.emit("newMessage", { activeRoomId, message })
-  //       toast({
-  //         title: "Message has been sent",
-  //       })
-  //     }
-  //     console.log(file)
-  //     if (file && file.size <= 15000000) {
-  //       const formData = new FormData();
-  //       formData.append('file', file);
-
-  //       try {
-
-  //         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload`, {
-  //           method: 'POST',
-  //           body: formData,
-  //         });
-  //         const result = await response.json();
-  //         if (result?.uploaded && socket) {
-  //           socket.emit("upload-file",
-  //             { fileName: result.file, activeRoomId }
-  //           )
-  //           toast({
-  //             title: "File has been sent",
-  //           })
-  //           setFile(null)
-  //         }
-
-  //       } catch (error) {
-  //         console.error('Error uploading file:', error);
-
-  //       }
-  //     }
-
-  //   }
-  // }
 
   return (
     <div className="px-5 py-5">
