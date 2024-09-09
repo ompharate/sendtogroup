@@ -48,16 +48,16 @@ const FileSection = () => {
                 title: "Please select a file",
             })
             return;
-        }   
-       
-        if(!socket?.connected || socket == undefined || !activeRoomId) {
+        }
+
+        if (!socket?.connected || socket == undefined || !activeRoomId) {
             toast({
                 title: "Please connect to a room",
             })
             return;
         }
-       
-        if((file.size/1024) > (5000000/1024)) {
+
+        if ((file.size / 1024) > (5000000 / 1024)) {
             toast({
                 title: "File size exceeds 5MB",
             })
