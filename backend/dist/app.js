@@ -63,20 +63,25 @@ app.get("*", (req, res) => {
 app.use(errorMiddleware);
 io.on("connection", (socket) => {
     console.log("User connected");
-    socket.on("join", ({ roomIdToJoin, nameToJoin }) => {
+    socket.on("join", (roomIdToJoin) => {
         console.log(`User joined room: ${roomIdToJoin}`);
         socket.join(roomIdToJoin);
-        io.to(roomIdToJoin).emit("newUser", nameToJoin);
+        const numberOfUsers = io.sockets.adapter.rooms.get(roomIdToJoin);
+        io.to(roomIdToJoin).emit("newUser", numberOfUsers?.size);
     });
     socket.on("leave", (roomId) => {
         console.log(`User left the room: ${roomId}`);
         socket.leave(roomId);
-        socket.to(roomId).emit("newUser", "a user left the room");
+        const numberOfUsers = io.sockets.adapter.rooms.get(roomId);
+        io.to(roomId).emit("newUser", numberOfUsers?.size);
     });
     socket.on("newMessage", ({ activeRoomId, message }) => {
         console.log(`User sent message in room: ${activeRoomId}`, message);
         // socket.to(activeRoomId).emit("message", message);
         io.to(activeRoomId).emit("message", message);
+    });
+    socket.on("codeChange", ({ newCode, activeRoomId }) => {
+        socket.to(activeRoomId).emit("updateCode", newCode);
     });
     socket.on("upload-file", ({ fileName, activeRoomId }) => {
         console.log("File received:", fileName);

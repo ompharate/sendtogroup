@@ -3,13 +3,15 @@ import { SocketContext } from '@/context/socketContext'
 import React, { useContext, useState } from 'react'
 import { toast } from './ui/use-toast';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
 
-    const { socket, randomId, setActiveRoomId, activeRoomId } = useContext(SocketContext) || { socket: null };
+    const { socket, randomId, setActiveRoomId, activeRoomId, setRandomId } = useContext(SocketContext) || { socket: null };
     console.log(activeRoomId)
     const [roomIdToJoin, setRoomIdToJoin] = useState<string | null>(null);
-    const [nameToJoin, setNameToJoin] = useState("");
+    const navigate = useRouter();
+
     const handleJoinRoom = () => {
         if (socket) {
             if (roomIdToJoin != null) {
@@ -19,8 +21,9 @@ const Navbar = () => {
                     })
                     return;
                 }
+                setRandomId(parseInt(roomIdToJoin))
                 setActiveRoomId(roomIdToJoin + "")
-                socket.emit("join", { roomIdToJoin, nameToJoin })
+                socket.emit("join", roomIdToJoin)
                 setRoomIdToJoin("")
                 toast({
                     title: "You have joined this room",
@@ -41,6 +44,7 @@ const Navbar = () => {
             toast({
                 title: "You have left the room",
             })
+            window.location.reload()
         }
     }
 
@@ -65,13 +69,7 @@ const Navbar = () => {
                         placeholder="Enter the id"
                         required={true}
                     />
-                    <input
-                        className='px-2 border w-[100px] rounded-lg h-7 lg:h-14'
-                        onChange={(e) => setNameToJoin(e.target.value)}
-                        type="text"
-                        placeholder="Your Name"
-                        required={false}
-                    />
+
                     <button onClick={handleJoinRoom} className='px-3 py-4 bg-[#281a21] text-white border border-white rounded-xl cursor-pointer font-semibold hover:bg-[#121211] hover:scale-90'>Join Room</button>
                 </div>
             ) : (

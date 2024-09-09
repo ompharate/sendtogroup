@@ -8,7 +8,8 @@ interface SocketContextValue {
   socket: Socket | null;
   randomId: number
   activeRoomId: string | null,
-  setActiveRoomId: React.Dispatch<React.SetStateAction<string | null>>
+  setActiveRoomId: React.Dispatch<React.SetStateAction<string | null>>,
+  setRandomId: React.Dispatch<React.SetStateAction<number>>
 
 }
 
@@ -42,7 +43,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
 
   return (
-    <SocketContext.Provider value={{ socket, randomId, activeRoomId, setActiveRoomId }}>
+    <SocketContext.Provider value={{ socket, randomId, activeRoomId, setActiveRoomId ,setRandomId}}>
       {children}
     </SocketContext.Provider>
   );

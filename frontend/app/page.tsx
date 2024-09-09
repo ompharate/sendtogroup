@@ -10,34 +10,22 @@ import FileTransfer from "@/components/FileSection";
 import Image from "next/image";
 import CodeEditorSection from "@/components/CodeEditorSection";
 import { Users } from "lucide-react";
-
-const tabs = [{
-  icon: <Image alt='text' src={"/textcon.png"} width={35} height={35} />,
-  component: <UserSideControl />
-}, {
-  icon: <Image alt='text' src={"/filetransfer.png"} width={35} height={35} />,
-  component: <FileTransfer />
-}, {
-  icon: <Image alt='text' src={"/codecoll.jfif"} width={35} height={35} />,
-  component: <CodeEditorSection />
-}]
+import tabs from "../components/tabs";
 
 
 export default function Home() {
   const { socket, activeRoomId } = useContext(SocketContext) || { socket: null };
-  const [numberOfUsers, setNumberOfUsers] = useState<string[] | null>([]);
-  // const [message, setMessage] = useState<string | null>(null)
+  const [numberOfUsers, setNumberOfUsers] = useState(0);
   // const [file, setFile] = useState<File | null>(null);
   const { toast } = useToast()
   const [activeTab, setActiveTab] = useState(0);
-  // console.log(process.env.BACKEND_URL)
   useEffect(() => {
 
     if (socket) {
-      socket.on("newUser", (nameToJoin,numberOfUsers) => {
-        setNumberOfUsers(nameToJoin)
+      socket.on("newUser", (numberOfUsers) => {
+        setNumberOfUsers(numberOfUsers)
         toast({
-          title: "New User is joined",
+          title: "New User is joined Or left the room",
         })
       })
     }
@@ -100,20 +88,24 @@ export default function Home() {
   return (
     <div className="px-5 py-5">
       <div className="border rounded-xl p-3 list-none flex gap-5">
-        {Array.from({ length: numberOfUsers?.length ?? 0 }).map((_, num) => (
+        {Array.from({ length: numberOfUsers ?? 0 }).map((_, num) => (
           <li className="flex flex-col items-center">
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <p>om</p>
+            <p>Ano..{num}</p>
           </li>
         ))}
       </div>
       <div className="my-5 flex items-center gap-5 h-full">
         <Slider setActiveTab={setActiveTab} />
         <div className="my-5 w-full">
-          {tabs[activeTab].component}
+          {tabs.map((tab) => (
+            <div key={tab.id} style={{ display: activeTab === tab.id ? 'block' : 'none' }}>
+              {tab.component}
+            </div>
+          ))}
         </div>
       </div>
     </div>
