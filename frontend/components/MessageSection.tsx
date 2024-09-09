@@ -33,8 +33,8 @@ const MessageSection = () => {
     return (
         <div className='mx-5 my-5 h-[300px] border rounded-md'>
             <div className='list-none h-full overflow-scroll'>
-                {allMessages.map((message) => (
-                    <li className='px-2 py-2'>{message}</li>
+                {allMessages.map((message,index) => (
+                    <li key={index} className='px-2 py-2'>{message}</li>
                 ))}
                
             </div>

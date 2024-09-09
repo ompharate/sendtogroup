@@ -33,7 +33,7 @@ export default function Home() {
     <div className="px-5 py-5">
       <div className="border rounded-xl p-3 list-none flex gap-5">
         {Array.from({ length: numberOfUsers ?? 0 }).map((_, num) => (
-          <li className="flex flex-col items-center">
+          <li key={num} className="flex flex-col items-center">
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
