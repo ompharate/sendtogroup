@@ -138,7 +138,7 @@ const FileSection = () => {
                         }} key={fileProgress.fileName} className="border p-5 text-center">
                             {fileProgress.percentComplete >= 100 ? (
                                 <div className='w-full flex  justify-center'>
-                                    <Image src={"/file.jfif"} width={50} height={50} alt='file' />
+                                    <Image src={"/file.png"} width={50} height={50} alt='file' />
                                 </div>
                             ) : (
                                 <>
