@@ -66,7 +66,7 @@ const FileSection = () => {
 
         try {
 
-            const response = await fetch(`http://localhost:4000/generatePresignedUrl?filename=${encodeURIComponent(file.name)}&filetype=${encodeURIComponent(file.type)}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/generatePresignedUrl?filename=${encodeURIComponent(file.name)}&filetype=${encodeURIComponent(file.type)}`);
             const { url } = await response.json();
 
             const xhr = new XMLHttpRequest();
